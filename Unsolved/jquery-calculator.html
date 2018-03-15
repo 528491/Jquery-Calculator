@@ -69,7 +69,7 @@ var firstNum = $("#first-number");
 var opeer = $("#operator");
 var seconNum = $("#second-number");
 var numbArray = ["0","1","2","3","4","5","6","7","8","9"];
-var opArray = ["+","-","x","÷","=","^"]; // ToDo - Remove equal sign, this requires special logic to evaluate 
+var opArray = [$("#button-plus").text(), $("#button-minus").text(),$("#button-multiply").text(),$("#button-divide").text(),$("#button-power").text()]; //Remove equal sign, this requires special logic to evaluate 
 // Your code here...
 btn.on("click", function () {
         var answer = $("<span>");
@@ -80,6 +80,7 @@ btn.on("click", function () {
         //Logic Regarding Clearing
         if (answer.text() == "clear"){
           //Clear the text of the first number, operator, second number, and result elements.
+          $("#result").text("");
           $("#first-number").text("");
           $("#operator").text("");
           $("#second-number").text("");
@@ -88,21 +89,57 @@ btn.on("click", function () {
         //We are using three if statements here because otherwise, the clear button will be appended to the screen, and we do not want that
         if ((jQuery.inArray(value, numbArray) !== -1) && (opeer.is(":empty"))){
           firstNum.append(answer);
-          console.log("first else");
+          //console.log("first else");
         }
+        
         //To append an operator, we must ensure two things
         //One - the button is an operator
         //Two - An operator has not already been chosen
-        if ((jQuery.inArray(value, opArray) !== -1) && (opeer.is(":empty"))){ 
+        //console.log(jQuery.inArray(value, opArray));
+        //console.log(opeer.is(":empty"));
+        //console.log(!firstNum.is(":empty"));
+        if ((jQuery.inArray(value, opArray) > -1) && (opeer.is(":empty")) && (!firstNum.is(":empty"))){ 
           opeer.append(answer);
-          console.log("second else");
+          //console.log("second else");
         } 
+        
         //If we're going to append an item to the second number container, some things need to be true
         //One - opeer can not be empty
         //Two - the item must be part of the numbArray
         if ((jQuery.inArray(value, numbArray) !== -1) && (!opeer.is(":empty"))){
-          console.log("third else");
+          //console.log("third else");
           seconNum.append(answer);
+        }
+
+        //If the value is "=", then we need to evaluate the expression and replace the values with the answer
+        //We can easily achieve this with some nested if statements
+        if (value == $("#button-equal").text()){
+          var answer = 0;
+          var firstNumber = parseInt(firstNum.text(), 10);
+          console.log(firstNumber);
+          var secondNumber = parseInt(seconNum.text(), 10);
+          if (opeer.text() == $("#button-plus").text()){
+            answer = firstNumber + secondNumber;
+          }
+          if (opeer.text() == $("#button-minus").text()){
+            answer = firstNumber - secondNumber;
+          }
+          if (opeer.text() == $("#button-multiply").text()){
+            answer = firstNumber * secondNumber;
+          }
+          if (opeer.text() == $("#button-divide").text()){
+            answer = firstNumber / secondNumber;
+          }
+          if (opeer.text() == $("#button-power").text()){
+            answer = firstNumber ** secondNumber;
+          }
+
+          //Clear everything and display the answer
+          $("#result").text("Result: " + answer);
+          $("#first-number").text("");
+          $("#operator").text("");
+          $("#second-number").text("");
+
         }
       
   
